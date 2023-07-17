@@ -30,9 +30,21 @@ function handle_registration($request) {
      $username = $params['username'];
      $email = $params['email'];
      $password = $params['password'];
+      // Check if the email and password are provided
+    if (empty($email) || empty($password)) {
+        return rest_ensure_response(array('message' => 'Email and password are required.'));
 
 
 }
 
 // Create a new user
 $user_id = wp_create_user($email, $password, $email);
+if (is_wp_error($user_id)) {
+    $error_message = $user_id->get_error_message();
+    return rest_ensure_response(array('message' => $error_message));
+}
+// Example response for successful registration
+return rest_ensure_response(array('message' => 'Registration successful.'));
+}
+
+
