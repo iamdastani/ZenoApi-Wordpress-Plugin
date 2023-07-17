@@ -30,6 +30,7 @@ function handle_registration($request) {
      $username = $params['username'];
      $email = $params['email'];
      $password = $params['password'];
+     
       // Check if the email and password are provided
     if (empty($email) || empty($password)) {
         return rest_ensure_response(array('message' => 'Email and password are required.'));
