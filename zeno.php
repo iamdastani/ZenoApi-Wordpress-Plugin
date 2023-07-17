@@ -31,4 +31,8 @@ function handle_registration($request) {
      $email = $params['email'];
      $password = $params['password'];
 
+
 }
+
+// Create a new user
+$user_id = wp_create_user($email, $password, $email);
