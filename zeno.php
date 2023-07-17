@@ -23,4 +23,12 @@ function registration_endpoint() {
 
 // Callback function for registration endpoint
 function handle_registration($request) {
-    $params = $request->get_json_params();}
+    $params = $request->get_json_params();
+
+     // Retrieve name, username, email, and password from the request
+     $name = $params['name'];
+     $username = $params['username'];
+     $email = $params['email'];
+     $password = $params['password'];
+
+}
