@@ -11,6 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: zeno-login-plugin
 Domain Path: /languages
 */
+
 // REST API endpoint for registration
 add_action('rest_api_init', 'registration_endpoint');
 
@@ -30,7 +31,7 @@ function handle_registration($request) {
      $username = $params['username'];
      $email = $params['email'];
      $password = $params['password'];
-     
+
       // Check if the email and password are provided
     if (empty($email) || empty($password)) {
         return rest_ensure_response(array('message' => 'Email and password are required.'));
@@ -44,7 +45,7 @@ if (is_wp_error($user_id)) {
     $error_message = $user_id->get_error_message();
     return rest_ensure_response(array('message' => $error_message));
 }
-// Example response for successful registration
+// Response for successful registration
 return rest_ensure_response(array('message' => 'Registration successful.'));
 }
 
