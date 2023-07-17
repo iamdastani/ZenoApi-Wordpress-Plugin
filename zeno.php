@@ -20,3 +20,7 @@ function registration_endpoint() {
         'callback' => 'handle_registration',
     ));
 }
+
+// Callback function for registration endpoint
+function handle_registration($request) {
+    $params = $request->get_json_params();}
