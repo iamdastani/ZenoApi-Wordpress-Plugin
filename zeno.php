@@ -19,7 +19,7 @@ add_action('rest_api_init', 'registration_endpoint' , 'login_endpoint');
 function login_endpoint() {
     register_rest_route('my-app/v1', '/login', array(
         'methods'  => 'POST',
-        'callback' => 'handle_registration',
+        'callback' => 'handle_login',
     ));
 }
 
