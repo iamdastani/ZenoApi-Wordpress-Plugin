@@ -10,11 +10,21 @@ License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: zeno-login-plugin
 Domain Path: /languages
-*/
+*/  
 
-// REST API endpoint for registration
-add_action('rest_api_init', 'registration_endpoint');
+// REST API endpoint for registration and login
+add_action('rest_api_init', 'registration_endpoint' , 'login_endpoint');
 
+// Login Function
+function login_endpoint() {
+    register_rest_route('my-app/v1', '/login', array(
+        'methods'  => 'POST',
+        'callback' => 'handle_registration',
+    ));
+}
+
+
+//Registration Function
 function registration_endpoint() {
     register_rest_route('my-app/v1', '/register', array(
         'methods'  => 'POST',
