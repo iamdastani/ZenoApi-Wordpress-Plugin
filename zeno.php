@@ -32,6 +32,22 @@ function registration_endpoint() {
     ));
 }
 
+// Callback function for login endpoint
+function handle_login($request) {
+    $params = $request->get_json_params();
+
+         // Retrieve email, and password from the request
+         $email = params[email];
+         $password = params[password];
+
+         // Response for successful Login
+return rest_ensure_response(array('message' => 'Login successful.'));
+}
+
+
+}
+
+
 // Callback function for registration endpoint
 function handle_registration($request) {
     $params = $request->get_json_params();
