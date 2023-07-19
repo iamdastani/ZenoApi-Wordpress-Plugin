@@ -45,7 +45,7 @@ return rest_ensure_response(array('message' => 'Login successful.'));
 }
 
 
-}
+
 
 
 // Callback function for registration endpoint
