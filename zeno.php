@@ -75,3 +75,129 @@ function handle_registration($request) {
     // Response for successful registration
     return rest_ensure_response(array('message' => 'Registration successful.'));
 }
+
+// Hook function to add logo in WordPress dashboard
+function add_plugin_logo() {
+    $logo_url = plugins_url( 'logo.png', __FILE__ ); 
+    ?>
+    <style>
+        /* CSS to style the logo */
+        #adminmenu #menu-posts-your-custom-post-type .wp-menu-image {
+            background: url('<?php echo $logo_url; ?>') no-repeat 6px 6px !important;
+        }
+    </style>
+    <?php
+}
+
+// Hook the function to the admin menu
+add_action('admin_head', 'add_plugin_logo');
+
+function custom_posts_endpoint() {
+    register_rest_route('flutter/v1', '/posts', array(
+        'methods' => 'GET',
+        'callback' => 'get_posts_for_flutter',
+    ));
+}
+add_action('rest_api_init', 'custom_posts_endpoint');
+function get_posts_for_flutter() {
+    $args = array(
+        'post_type' => 'post', // Change this if needed
+        'posts_per_page' => -1, // Retrieve all posts, you can set a limit
+        // Add more parameters if required for post filtering
+    );
+
+    $posts = get_posts($args);
+
+    $formatted_posts = array();
+
+    foreach ($posts as $post) {
+        setup_postdata($post);
+
+        // Fetch content using ACF function to retrieve 'brk-page-content' field
+        $content = get_field('content', $post->ID);
+        $content = apply_filters('the_content', $content);
+        $content = wp_kses_post($content); // Ensures only allowed HTML tags
+
+        $formatted_posts[] = array(
+            'id' => $post->ID,
+            'title' => get_the_title($post->ID),
+            'content' => $content,
+            // Add more fields as needed
+        );
+    }
+
+    wp_reset_postdata(); // Reset post data
+
+    return new WP_REST_Response($formatted_posts, 200);
+}
+
+
+
+
+function get_listings_for_flutter() {
+    $args = array(
+        'post_type' => 'rz_listing', // Routiz listing post type
+        'posts_per_page' => -1,
+        // Add more parameters if needed for filtering
+    );
+
+    $listings = get_posts($args);
+
+    $formatted_listings = array();
+
+    foreach ($listings as $listing) {
+        $image_url = get_the_post_thumbnail_url($listing->ID, 'full'); 
+        // Customize this section to structure the data as required for Flutter
+
+        $formatted_listings[] = array(
+            'id' => $listing->ID,
+            'title' => get_the_title($listing->ID),
+            'image_url' => $image_url,
+
+            // Add more fields as needed (e.g., excerpt, custom fields, etc.)
+        );
+    }
+
+    return new WP_REST_Response($formatted_listings, 200);
+}
+
+function register_listing_rest_route() {
+    register_rest_route('flutter/v1', '/listings', array(
+        'methods' => 'GET',
+        'callback' => 'get_listings_for_flutter',
+    ));
+}
+add_action('rest_api_init', 'register_listing_rest_route');
+
+//Tags
+
+function get_tags_for_flutter() {
+    $args = array(
+        'taxonomy' => 'rz_job-tags', // Taxonomy for your tags
+        // You can add more parameters for filtering if needed
+    );
+
+    $tags = get_terms($args);
+
+    $formatted_tags = array();
+
+    foreach ($tags as $tag) {
+        // Customize this section to structure the tag data as required for Flutter
+        $formatted_tags[] = array(
+            'id' => $tag->term_id,
+            'name' => $tag->name,
+            // Add more fields if needed
+        );
+    }
+
+    return new WP_REST_Response($formatted_tags, 200);
+}
+
+function register_tags_rest_route() {
+    register_rest_route('flutter/v1', '/tags', array(
+        'methods' => 'GET',
+        'callback' => 'get_tags_for_flutter',
+    ));
+}
+add_action('rest_api_init', 'register_tags_rest_route');
+
